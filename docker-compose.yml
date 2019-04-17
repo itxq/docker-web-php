@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+
+  nginx-1.15:
+    container_name: itxq-nginx1.15
+    build:
+      context: ./nginx/
+      dockerfile: nginx1.15/Dockerfile
+    #image: nginx:1.15
+    volumes:
+      - ./nginx/nginx1.15:/etc/nginx/conf.d:ro
+      - ./web:/web
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    links:
+      - php-7.2
+    networks:
+      - backend
+
+  php-7.2:
+    container_name: itxq-php7.2
+    build:
+      context: ./php/
+      dockerfile: php7.2/Dockerfile
+    # image: php:7.2-fpm
+    volumes:
+      - ./web:/web
+    networks:
+      - backend
+
+  mariadb-10.3:
+    container_name: itxq-mariadb10.3
+    # image: mariadb:10.3
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: "Asia/Shanghai"
+      MYSQL_ROOT_PASSWORD: "1008611"
+      MYSQL_DATABASE: "test"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+    volumes:
+      - /mariadb/mariadb10.3/data:/var/lib/mysql
+    networks:
+      - backend
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
