@@ -1,16 +1,17 @@
-version: "3"
+version: "3.1"
 
 services:
 
   nginx-1.15:
     container_name: itxq-nginx1.15
     build:
-      context: ./nginx/
+      context: ./docker/
       dockerfile: nginx1.15/Dockerfile
     #image: nginx:1.15
     volumes:
-      - ./nginx/nginx1.15:/etc/nginx/conf.d:ro
       - ./web:/web
+      - ./config/nginx1.15:/etc/nginx/conf.d:ro
+      - ./log/nginx1.15:/var/log/nginx:rw
     ports:
       - "80:80"
       - "8080:8080"
@@ -23,25 +24,29 @@ services:
   php-7.2:
     container_name: itxq-php7.2
     build:
-      context: ./php/
+      context: ./docker/
       dockerfile: php7.2/Dockerfile
     # image: php:7.2-fpm
     volumes:
       - ./web:/web
+      - ./config/php7.2:/usr/local/etc/php/conf.d:ro
     networks:
       - backend
 
   mariadb-10.3:
     container_name: itxq-mariadb10.3
+    build:
+      context: ./mariadb/
+      dockerfile: mariadb10.3/Dockerfile
     # image: mariadb:10.3
     ports:
       - "3306:3306"
     environment:
-      TZ: "Asia/Shanghai"
-      MYSQL_ROOT_PASSWORD: "1008611"
-      MYSQL_DATABASE: "test"
-      MYSQL_USER: "test"
-      MYSQL_PASSWORD: "test"
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test1
+      MYSQL_USER: test1
+      MYSQL_PASSWORD: test1
     volumes:
       - /mariadb/mariadb10.3/data:/var/lib/mysql
     networks:
