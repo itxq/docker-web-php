@@ -3,15 +3,15 @@ version: "3.1"
 services:
 
   nginx-1.15:
-    container_name: itxq-nginx1.15
+    env_file:
+      - .env
     build:
       context: ./docker/
       dockerfile: nginx1.15/Dockerfile
-    #image: nginx:1.15
     volumes:
-      - ./web:/web
-      - ./config/nginx1.15:/etc/nginx/conf.d:ro
-      - ./log/nginx1.15:/var/log/nginx:rw
+      - ${WEB_PATH}/:/www/wwwroot/:rw
+      - ./config/nginx1.15/:/etc/nginx/conf.d/:ro
+      - ./log/nginx1.15/:/var/log/nginx/:rw
     ports:
       - "80:80"
       - "8080:8080"
@@ -20,35 +20,55 @@ services:
       - php-7.2
     networks:
       - backend
+      - frontend
 
   php-7.2:
-    container_name: itxq-php7.2
     build:
       context: ./docker/
       dockerfile: php7.2/Dockerfile
-    # image: php:7.2-fpm
     volumes:
-      - ./web:/web
-      - ./config/php7.2:/usr/local/etc/php/conf.d:ro
+      - ${WEB_PATH}/:/www/wwwroot/:rw
     networks:
       - backend
 
-  mariadb-10.3:
-    container_name: itxq-mariadb10.3
+  #  mariadb-10.3:
+  #    env_file:
+  #      - .env
+  #    build:
+  #      context: ./docker/
+  #      dockerfile: mariadb10.3/Dockerfile
+  #    ports:
+  #      - "3306:3306"
+  #    environment:
+  #      TZ: "${TZ}"
+  #      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+  #      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+  #      MYSQL_USER: "${MYSQL_USER}"
+  #      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+  #    volumes:
+  #      - ./data/mariadb10.3/:/var/lib/mysql/:rw
+  #      - ./log/mariadb10.3/:/var/log/mysql/:rw
+  #    networks:
+  #      - backend
+  #    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  mysql-5.7:
+    env_file:
+      - .env
     build:
-      context: ./mariadb/
-      dockerfile: mariadb10.3/Dockerfile
-    # image: mariadb:10.3
+      context: ./docker/
+      dockerfile: mysql5.7/Dockerfile
     ports:
-      - "3306:3306"
+      - "3307:3307"
     environment:
-      TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test1
-      MYSQL_USER: test1
-      MYSQL_PASSWORD: test1
+      TZ: "${TZ}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
-      - /mariadb/mariadb10.3/data:/var/lib/mysql
+      - ./data/mysql5.7/:/var/lib/mysql/:rw
+      - ./log/mysql5.7/:/var/log/mysql/:rw
     networks:
       - backend
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
