@@ -9,6 +9,7 @@ services:
       context: ./docker/
       dockerfile: nginx1.15/Dockerfile
     volumes:
+      - ./.env/:/www/.env:ro
       - ${WEB_PATH}/:/www/wwwroot/:rw
       - ./config/nginx1.15/:/etc/nginx/conf.d/:ro
       - ./log/nginx1.15/:/var/log/nginx/:rw
@@ -19,20 +20,20 @@ services:
     links:
       - php-7.2
     networks:
-      - backend
-      - frontend
+      - bridge-network
 
   php-7.2:
     build:
       context: ./docker/
       dockerfile: php7.2/Dockerfile
     volumes:
+      - ./.env/:/www/.env:ro
       - ${WEB_PATH}/:/www/wwwroot/:rw
       - ./config/php7.2/php.ini:/usr/local/etc/php/php.ini:ro
     links:
       - mysql-5.7
     networks:
-      - backend
+      - bridge-network
 
   mysql-5.7:
     env_file:
@@ -53,11 +54,9 @@ services:
       - ./data/mysql5.7/:/var/lib/mysql/:rw
       - ./log/mysql5.7/:/var/log/mysql/:rw
     networks:
-      - backend
+      - bridge-network
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 networks:
-  backend:
-    driver: bridge
-  frontend:
+  bridge-network:
     driver: bridge
