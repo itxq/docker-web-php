@@ -28,6 +28,8 @@ services:
       dockerfile: php7.2/Dockerfile
     volumes:
       - ${WEB_PATH}/:/www/wwwroot/:rw
+    links:
+      - mysql-5.7
     networks:
       - backend
 
@@ -59,7 +61,7 @@ services:
       context: ./docker/
       dockerfile: mysql5.7/Dockerfile
     ports:
-      - "3307:3307"
+      - "3306:3306"
     environment:
       TZ: "${TZ}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
