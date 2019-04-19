@@ -34,30 +34,9 @@ services:
     networks:
       - backend
 
-  #  mariadb-10.3:
-  #    env_file:
-  #      - .env
-  #    build:
-  #      context: ./docker/
-  #      dockerfile: mariadb10.3/Dockerfile
-  #    ports:
-  #      - "3306:3306"
-  #    environment:
-  #      TZ: "${TZ}"
-  #      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-  #      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-  #      MYSQL_USER: "${MYSQL_USER}"
-  #      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-  #    volumes:
-  #      - ./data/mariadb10.3/:/var/lib/mysql/:rw
-  #      - ./log/mariadb10.3/:/var/log/mysql/:rw
-  #    networks:
-  #      - backend
-  #    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-
   mysql-5.7:
     env_file:
-      - ./web/.env
+      - .env
     build:
       context: ./docker/
       dockerfile: mysql5.7/Dockerfile
