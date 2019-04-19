@@ -28,6 +28,7 @@ services:
       dockerfile: php7.2/Dockerfile
     volumes:
       - ${WEB_PATH}/:/www/wwwroot/:rw
+      - ./config/php7.2/php.ini:/usr/local/etc/php/php.ini:ro
     links:
       - mysql-5.7
     networks:
@@ -56,19 +57,20 @@ services:
 
   mysql-5.7:
     env_file:
-      - .env
+      - ./web/.env
     build:
       context: ./docker/
       dockerfile: mysql5.7/Dockerfile
     ports:
       - "3306:3306"
     environment:
-      TZ: "${TZ}"
+      TZ: "Asia/Shanghai"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
+      - ./config/mysql5.7/my.cnf:/etc/mysql/my.cnf:ro
       - ./data/mysql5.7/:/var/lib/mysql/:rw
       - ./log/mysql5.7/:/var/log/mysql/:rw
     networks:
