@@ -1,4 +1,4 @@
-FROM nginx:1.15
+FROM nginx:1.15-alpine
 
 MAINTAINER IT小强xqitw.cn <mail@xqitw.cn>
 
